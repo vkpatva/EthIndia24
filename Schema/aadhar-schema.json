@@ -22,7 +22,7 @@
         "dob": {
           "description": "Birth date of the person",
           "title": "Date of Birth",
-          "format": "DOB",
+          "format": "date",
           "type": "string"
         },
         "address": {
