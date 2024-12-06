@@ -1,7 +1,7 @@
 {
   "$metadata": {
     "uris": {
-      "jsonLdContext": "https://raw.githubusercontent.com/vkpatva/EthIndia24/refs/heads/main/aadhar-json-ld.json"
+      "jsonLdContext": "https://raw.githubusercontent.com/vkpatva/EthIndia24/refs/heads/main/Schema/aadhar-json-ld.json"
     },
     "version": "1.0",
     "type": "aadharcard"
