@@ -1,0 +1,39 @@
+{
+  "@context": [
+    {
+      "@protected": true,
+      "@version": 1.1,
+      "id": "@id",
+      "type": "@type",
+      "aadharcard": {
+        "@context": {
+          "@propagate": true,
+          "@protected": true,
+          "polygon-vocab": "urn:uuid:8f58e2ac-1046-4872-b404-25d82c9beac6#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "name": {
+            "@id": "polygon-vocab:name",
+            "@type": "xsd:string"
+          },
+          "dob": {
+            "@id": "polygon-vocab:dob",
+            "@type": "xsd:dateTime"
+          },
+          "address": {
+            "@id": "polygon-vocab:address",
+            "@type": "xsd:string"
+          },
+          "pincode": {
+            "@id": "polygon-vocab:pincode",
+            "@type": "xsd:string"
+          },
+          "city": {
+            "@id": "polygon-vocab:city",
+            "@type": "xsd:string"
+          }
+        },
+        "@id": "urn:uuid:31fda11f-1faf-4496-b398-6e3116bd9f61"
+      }
+    }
+  ]
+}
