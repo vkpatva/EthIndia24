@@ -23,7 +23,21 @@ export default function Home() {
 
     if (success === "True" && id) {
       setCurrentStep(2);
-      fetchUserData(id);
+      if (id != "mock") fetchUserData(id);
+      else {
+        setUserData({
+          aadhaar: {
+            name: "Ajay Srivastav",
+            dateOfBirth: "1999-01-01",
+            address: {
+              house: "F-1202",
+              street: "KT Nagar",
+              postOffice: "Abu",
+              pin: "389991",
+            },
+          },
+        });
+      }
     }
   }, [searchParams]);
 
