@@ -2,63 +2,84 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
-    const name = searchParams.get('name');
-    const dob = searchParams.get('dob');
-    const gender = searchParams.get('gender');
-    const address = searchParams.get('address');
-    const city = searchParams.get('city');
-    const pincode = searchParams.get('pincode');
+    // console.log(searchParams);
+    //todo: uncomment
+    // const name = searchParams.get('name');
+    // const dob = searchParams.get('dob');
+    // const address = searchParams.get('address');
+    // const city = searchParams.get('city');
+    // const pincode = searchParams.get('pincode');
+
+    console.log(searchParams)
 
     try {
-        const credentials = {
-            name: name || "Ajay Sharma",
-            dob: dob || "2000-01-01",
-            gender: gender || "M",
-            address: address || "B-101, Ashray, Ahmedabad",
-            city: city || "Ahmedabad",
-            pincode: pincode || "380001"
+
+        const url =
+            process.env.ISSUER_URL as string + "/v2/identities/did:iden3:polygon:amoy:xC3kP1H11c5EpKrmHXXKSEmkaeim3anmEq8nxcwMd/credentials/links";
+        const headers = {
+            Accept: "application/json, text/plain, */*",
+            "Accept-Language": "en-US,en;q=0.9,hi;q=0.8",
+            Authorization: process.env.ISSUER_AUTH_TOKEN as string,
+            "Content-Type": "application/json",
+            Origin: "https://issuer5-ui.zkred.tech",
         };
 
+        // const formatDate = (dateStr: string) => {
+        //     if (!dateStr) return "2000-01-01";
+        //     const [day, month, year] = dateStr.split("-");
+        //     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        // };
+        const body = {
+            credentialExpiration: null,
 
-        const zkredResponse = await fetch(process.env.ISSUER_URL as string, {
-            method: 'POST',
-            headers: {
-                'Authorization': process.env.ISSUER_HEADER as string,
-                'Content-Type': 'application/json',
+            credentialSubject: {
+                name: "Ajay Srivastav",
+                dob: "1999-01-01",
+                address: "F-1202, KT Nagar, Abu Road , Rajasthan",
+                pincode: "389991",
+                city: "Abu",
             },
-            body: JSON.stringify({
-                credentialSubject: {
-                    name: credentials.name,
-                    dob: credentials.dob,
-                    address: credentials.address,
-                    pincode: credentials.pincode,
-                    city: credentials.city
-                },
-                schemaID: process.env.SCHEMA_ID as string,
-                signatureProof: true,
-                mtProof: false,
-                limitedClaims: 1,
-            })
+            //todo : uncomment
+            // credentialSubject: {
+            //     name: name,
+            //     dob: formatDate(dob as string),
+            //     address: address,
+            //     pincode: pincode,
+            //     city: city,
+            // },
+            expiration: null,
+            limitedClaims: null,
+            mtProof: false,
+            refreshService: null,
+            schemaID: "0ee1821d-326f-4a71-898a-ee3d708f4f01",
+            signatureProof: true,
+        };
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(body),
         });
-        console.log(zkredResponse);
 
-        const zkredData = await zkredResponse.json();
-
-        const linkId = zkredData.id;
-
-        console.log(process.env.ISSUER_URL as string);
-        const offerResponse = await fetch(`${process.env.ISSUER_URL as string}${linkId}/offer`, {
-            method: 'POST',
+        const data = await response.json();
+        const linkId = data.id;
+        console.log(data);
+        const offerResponse = await fetch(`${url}/${linkId}/offer`, {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-            }
+                "Content-Type": "application/json",
+            },
         });
 
         const offerData = await offerResponse.json();
+
         return NextResponse.json({
             deepLink: offerData.deepLink,
-            universalLink: offerData.universalLink
+            universalLink: offerData.universalLink,
         });
+
+
+
     } catch (error) {
         console.error('Error:', error);
         return NextResponse.json({ error: 'Failed to process request' }, { status: 500 });

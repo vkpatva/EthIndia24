@@ -108,8 +108,8 @@ export default function Home() {
   };
 
   const handleAddToWallet = () => {
-    if (deepLink) {
-      window.location.href = deepLink;
+    if (universalLink) {
+      window.location.href = universalLink;
     }
   };
 
@@ -264,7 +264,9 @@ export default function Home() {
                       <label className="text-sm font-medium text-gray-500">
                         Name
                       </label>
-                      <p className="text-lg">{userData.aadhaar.name}</p>
+                      <p className="text-lg">
+                        {userData.aadhaar?.name || "Ajay Srivastav"}
+                      </p>
                     </div>
 
                     <div>
@@ -272,7 +274,8 @@ export default function Home() {
                         Address
                       </label>
                       <p className="text-lg">
-                        {`${userData.aadhaar.address.house} ${userData.aadhaar.address.street}`}
+                        {`${userData.aadhaar?.address.house} ${userData.aadhaar?.address.street}` ||
+                          "F-1202, KT Nagar, Abu Road , Rajasthan"}
                       </p>
                     </div>
 
@@ -280,7 +283,9 @@ export default function Home() {
                       <label className="text-sm font-medium text-gray-500">
                         Date of Birth
                       </label>
-                      <p className="text-lg">{userData.aadhaar.dateOfBirth}</p>
+                      <p className="text-lg">
+                        {userData.aadhaar?.dateOfBirth || "1999-01-01"}
+                      </p>
                     </div>
 
                     <div>
@@ -288,14 +293,16 @@ export default function Home() {
                         City
                       </label>
                       <p className="text-lg">
-                        {userData.aadhaar.address.postOffice}
+                        {userData.aadhaar?.address.postOffice || "Abu"}
                       </p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-gray-500">
                         Pincode
                       </label>
-                      <p className="text-lg">{userData.aadhaar.address.pin}</p>
+                      <p className="text-lg">
+                        {userData.aadhaar?.address.pin || "389991"}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -304,7 +311,7 @@ export default function Home() {
                   <div className="w-96 h-96 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
                     {universalLink ? (
                       <QRCode
-                        value={universalLink}
+                        value={deepLink || ""}
                         size={384} // slightly smaller than container to ensure padding
                       />
                     ) : (
