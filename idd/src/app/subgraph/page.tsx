@@ -11,12 +11,22 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export default function Subgraph() {
   const [requestData, setRequestData] = useState([]);
-  const [searchValidator, setSearchValidator] = useState("");
+  const [searchOwner, setSearchOwner] = useState("");
   const [searchRequestId, setSearchRequestId] = useState("");
   const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const handleRequestClick = (requestId: string) => {
     router.push(`/request/${requestId}`);
@@ -29,7 +39,7 @@ export default function Subgraph() {
     cache: new InMemoryCache(),
   });
   const query = `{
-  zkprequestSets(first: 10) {
+  zkprequestSets(first: 100) {
     requestId
     transactionHash
     validator
@@ -52,8 +62,15 @@ export default function Subgraph() {
 
   const filteredData = requestData.filter(
     (request: any) =>
-      request.validator.toLowerCase().includes(searchValidator.toLowerCase()) &&
+      request.requestOwner.toLowerCase().includes(searchOwner.toLowerCase()) &&
       request.requestId.toLowerCase().includes(searchRequestId.toLowerCase())
+  );
+
+  // Add pagination calculation
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
   );
 
   return (
@@ -62,9 +79,9 @@ export default function Subgraph() {
         <h1 className="text-2xl font-bold">ZK Request Sets</h1>
         <div className="flex gap-4 flex-wrap">
           <Input
-            placeholder="Search by validator address..."
-            value={searchValidator}
-            onChange={(e) => setSearchValidator(e.target.value)}
+            placeholder="Search by request owner..."
+            value={searchOwner}
+            onChange={(e) => setSearchOwner(e.target.value)}
             className="max-w-md"
           />
           <Input
@@ -87,7 +104,7 @@ export default function Subgraph() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredData.map(
+            {paginatedData.map(
               (request: {
                 requestId: string;
                 transactionHash: string;
@@ -116,6 +133,47 @@ export default function Subgraph() {
             )}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Add pagination controls below the table */}
+      <div className="mt-4 flex justify-center">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                className={
+                  currentPage === 1
+                    ? "pointer-events-none opacity-50"
+                    : "cursor-pointer"
+                }
+              />
+            </PaginationItem>
+            {[...Array(totalPages)].map((_, i) => (
+              <PaginationItem key={i + 1}>
+                <PaginationLink
+                  onClick={() => setCurrentPage(i + 1)}
+                  isActive={currentPage === i + 1}
+                  className="cursor-pointer"
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                className={
+                  currentPage === totalPages
+                    ? "pointer-events-none opacity-50"
+                    : "cursor-pointer"
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );
