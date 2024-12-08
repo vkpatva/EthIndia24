@@ -39,7 +39,7 @@ export default function Subgraph() {
     cache: new InMemoryCache(),
   });
   const query = `{
-  zkprequestSets(first: 100) {
+  zkprequestSets(first: 100, orderBy: blockTimestamp, orderDirection: desc) {
     requestId
     transactionHash
     validator
@@ -61,6 +61,7 @@ export default function Subgraph() {
   }, []);
 
   const filteredData = requestData.filter(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (request: any) =>
       request.requestOwner.toLowerCase().includes(searchOwner.toLowerCase()) &&
       request.requestId.toLowerCase().includes(searchRequestId.toLowerCase())
@@ -76,7 +77,7 @@ export default function Subgraph() {
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold">ZK Request Sets</h1>
+        <h1 className="text-2xl font-bold">Universal Verifier Requests</h1>
         <div className="flex gap-4 flex-wrap">
           <Input
             placeholder="Search by request owner..."

@@ -19,7 +19,7 @@ export async function GET(request: Request) {
         const headers = {
             Accept: "application/json, text/plain, */*",
             "Accept-Language": "en-US,en;q=0.9,hi;q=0.8",
-            Authorization: process.env.ISSUER_AUTH_TOKEN as string,
+            Authorization: process.env.ISSUER__AUTH_TOKEN as string,
             "Content-Type": "application/json",
             Origin: "https://issuer5-ui.zkred.tech",
         };
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
             schemaID: "0ee1821d-326f-4a71-898a-ee3d708f4f01",
             signatureProof: true,
         };
-
+        console.log(body, url, headers);
         const response = await fetch(url, {
             method: "POST",
             headers: headers,
